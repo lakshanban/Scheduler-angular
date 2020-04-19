@@ -18,29 +18,44 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
 
-
-  }
-
-  timeout() {
-
+    let today=new Date();
+    let date= today.getFullYear()+'-'+'0'+(today.getMonth()+1)+'-'+today.getDate();
+    let time="";
+    if(today.getMinutes()<10) {
+       time = today.getHours() + ':' +'0'+ today.getMinutes();
+    }else {
+       time= today.getHours() + ':' + today.getMinutes();
+    }
     setInterval(() => {
 
-      this.eventslist.map(x => {
+      this.eventslist.map(event=>{
 
-        let today = new Date();
-        let date = today.getDate();
-        let now = today.getTime();
+       if(event.startDate.toString()===date){
 
-        if (x.startDate === today) {
+         alert(time)
 
-          alert('fuck');
-        }
+         if(event.startTime.hours)
+         {
+
+         }
+
+
+
+       }
+
+
 
 
       })
 
 
-    }, 5000);
+    }, 2000);
+
+  }
+
+  timeout() {
+
+
   }
 
 
