@@ -18,13 +18,15 @@
       <th class="th">StartTIme</th>
       <th class="th">EndDate </th>
       <th class="th">EndTime</th>
+      <th class="th">delete Event</th>
 
-      <tr *ngFor=" let ee of filteredlist" style="margin-left: 10px">
+      <tr *ngFor=" let ee of filteredlist" style="margin-left: 10px; background: #00acee">
         <td class="td"><input type="text" name="title" class="input" value="{{ee.title}}" (change)="HandleEdit('title',$event.target.value,ee.id)"></td>
         <td class="td"><input type="date" class="input" value="{{ee.startDate}}" (change)="HandleEdit('startDate',$event.target.value,ee.id)"></td>
         <td class="td"><input type="time" class="input" value="{{ee.startTime}}" (change)="HandleEdit('startTime',$event.target.value,ee.id)"></td>
         <td class="td"><input type="date" class="input" value="{{ee.endDate}}" (change)="HandleEdit('endDate',$event.target.value,ee.id)"></td>
         <td class="td"><input type="time" class="input" value="{{ee.endTime}}" (change)="HandleEdit('endTime',$event.target.value,ee.id)"></td>
+        <td class="td"> <button (click)="deleteEvent(ee.id)" class="add-event-btn" style="margin-top: 10px">delete</button></td>
       </tr>
 
 
@@ -42,7 +44,7 @@
 
 <div class="addEvent" style="margin-left: 100px;background: lightgray; margin-top: 50px; width: 30%">
 
-  <h4 style="margin-left: 40%">{{etitle}}</h4>
+  <h4 style="margin-left: 40%">Add Event</h4>
 
   <div>
     <label>Enter Title</label>

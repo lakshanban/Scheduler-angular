@@ -6,6 +6,7 @@ import  interactionPlugin from '@fullcalendar/interaction' ;
 import {Interaction} from '@fullcalendar/core/interactions/interaction';
 import {Time} from '@angular/common';
 import {EventInt} from './EventInt';
+import {stringify} from 'querystring';
 
 
 @Component({
@@ -15,41 +16,39 @@ import {EventInt} from './EventInt';
 })
 export class AppComponent implements OnInit {
 
+  t:Time;
 
   ngOnInit(): void {
 
-    let today=new Date();
-    let date= today.getFullYear()+'-'+'0'+(today.getMonth()+1)+'-'+today.getDate();
-    let time="";
-    if(today.getMinutes()<10) {
-       time = today.getHours() + ':' +'0'+ today.getMinutes();
-    }else {
-       time= today.getHours() + ':' + today.getMinutes();
-    }
+
     setInterval(() => {
+
+
 
       this.eventslist.map(event=>{
 
-       if(event.startDate.toString()===date){
+        let startDate= new Date(event.startDate+' '+event.startTime);
+        let endDate= new Date(event.endDate+' '+event.endTime);
+        let today= new Date();
 
-         alert(time)
+        let DifMin= ((startDate.getTime()-today.getTime())/(1000*60));
 
-         if(event.startTime.hours)
-         {
+        if(today>endDate) {
+          this.deleteEvent(event.id)
+        }
 
-         }
+        if(DifMin<5){
 
+          alert(DifMin+' more for event :'+event.title);
 
-
-       }
-
+        }
 
 
 
       })
 
 
-    }, 2000);
+    }, 60000);
 
   }
 
@@ -61,10 +60,11 @@ export class AppComponent implements OnInit {
 
 
   etitle:string="";
-  estartDate: Date;
-  eendDate: Date ;
-  estartTime : Time ;
-  eendTime : Time;
+  estartDate: string;
+  eendDate: string ;
+  estartTime : string ;
+  eendTime : string;
+
 
  eventslist= new Array<EventInt>();
  filteredlist= new Array<EventInt>();
@@ -93,6 +93,9 @@ export class AppComponent implements OnInit {
    this.eventslist.push(eve)
 
      this.timeout();
+
+     this.etitle=""; this.estartDate=null; this.estartTime=null; this.eendDate=null; this.eendTime=null;
+
 
     console.log(this.eventslist)
    }
@@ -123,6 +126,7 @@ export class AppComponent implements OnInit {
           x.endTime=value;
 
 
+
       }
     });
 
@@ -141,6 +145,15 @@ export class AppComponent implements OnInit {
   showAllEvents(){
 
      this.filteredlist=this.eventslist;
+  }
+
+
+  deleteEvent(id){
+
+    this.eventslist= this.eventslist.filter(x=> x.id!=id);
+    this.filteredlist= this.eventslist.filter(x=> x.id!=id);
+
+
   }
 
 
