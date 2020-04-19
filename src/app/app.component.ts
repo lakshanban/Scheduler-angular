@@ -57,7 +57,7 @@ export class AppComponent implements OnInit {
   calendarPlugins = [dayGridPlugin, interactionPlugin] ;
 
 
-
+//adding a event
 
    AddEvent(){
 
@@ -77,9 +77,11 @@ export class AppComponent implements OnInit {
 
    this.eventslist.push(eve)
 
+     this.timeout();
+
     console.log(this.eventslist)
    }
-
+//generating a unique ID
    ID(){
 
     return "_"+Math.random().toString().substring(2,8);
@@ -87,7 +89,7 @@ export class AppComponent implements OnInit {
 
 
 
-
+// Edit event details
   HandleEdit(type, value, id){
 
     this.eventslist.map(x=>{
@@ -111,6 +113,7 @@ export class AppComponent implements OnInit {
 
   }
 
+  // getting events to a particular date
   filterEvents(date){
 
      let filterdate=date.dateStr;
@@ -119,6 +122,7 @@ export class AppComponent implements OnInit {
 
   }
 
+  //reffer to show all events button
   showAllEvents(){
 
      this.filteredlist=this.eventslist;
