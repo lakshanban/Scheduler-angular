@@ -7,4 +7,14 @@ export interface EventInt {
   startTime: string;
   endDate: string ;
   endTime: string;
+  ssDate: Date;
+  Style: boolean;
+}
+
+
+export  interface calevent {
+
+  title:string;
+  date:string;
+
 }

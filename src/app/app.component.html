@@ -4,10 +4,7 @@
 </mat-toolbar>
 <div style="display: flex">
 <div class="calendardiv">
-<full-calendar defaultView="dayGridMonth" [plugins]="calendarPlugins" [events]="[
-    { title: 'event 1', date: '2020-04-01' },
-    { title: 'event 2', date: '2020-04-02' }
-  ]" (dateClick)="filterEvents($event)" ></full-calendar>
+<full-calendar defaultView="dayGridMonth" [plugins]="calendarPlugins" [events]="calevent" (dateClick)="filterEvents($event)" ></full-calendar>
 </div>
 
   <div class="table">
@@ -20,7 +17,7 @@
       <th class="th">EndTime</th>
       <th class="th">delete Event</th>
 
-      <tr *ngFor=" let ee of filteredlist" style="margin-left: 10px; background: #00acee">
+      <tr *ngFor=" let ee of filteredlist" style="margin-left: 10px; background: #00acee" >
         <td class="td"><input type="text" name="title" class="input" value="{{ee.title}}" (change)="HandleEdit('title',$event.target.value,ee.id)"></td>
         <td class="td"><input type="date" class="input" value="{{ee.startDate}}" (change)="HandleEdit('startDate',$event.target.value,ee.id)"></td>
         <td class="td"><input type="time" class="input" value="{{ee.startTime}}" (change)="HandleEdit('startTime',$event.target.value,ee.id)"></td>

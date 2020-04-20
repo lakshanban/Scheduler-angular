@@ -1,22 +1,19 @@
-import {Component, OnInit} from '@angular/core';
-import {MatToolbar} from '@angular/material/toolbar';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import {FullCalendarComponent} from '@fullcalendar/angular';
-import  interactionPlugin from '@fullcalendar/interaction' ;
-import {Interaction} from '@fullcalendar/core/interactions/interaction';
+import interactionPlugin from '@fullcalendar/interaction';
 import {Time} from '@angular/common';
-import {EventInt} from './EventInt';
-import {stringify} from 'querystring';
+import {calevent, EventInt} from './EventInt';
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
 
-  t:Time;
+  t: Time;
 
   ngOnInit(): void {
 
@@ -24,31 +21,33 @@ export class AppComponent implements OnInit {
     setInterval(() => {
 
 
+      this.eventslist.map(event => {
 
-      this.eventslist.map(event=>{
 
-        let startDate= new Date(event.startDate+' '+event.startTime);
-        let endDate= new Date(event.endDate+' '+event.endTime);
-        let today= new Date();
 
-        let DifMin= ((startDate.getTime()-today.getTime())/(1000*60));
+        let startDate = new Date(event.startDate + ' ' + event.startTime);
+        let endDate = new Date(event.endDate + ' ' + event.endTime);
+        let today = new Date();
 
-        if(today>endDate) {
+        let DifMin = ((startDate.getTime() - today.getTime()) / (1000 * 60));
+
+        if (today > endDate) {
           this.deleteEvent(event.id)
         }
 
-        if(DifMin<5){
+        if (DifMin < 5 && DifMin > 0) {
 
-          alert(DifMin+' more for event :'+event.title);
-
+         if (event.Style === false) {
+           alert(DifMin + ' more for event :' + event.title);
+           event.Style = true;
+         }
         }
-
 
 
       })
 
 
-    }, 60000);
+    }, 10000);
 
   }
 
@@ -58,108 +57,143 @@ export class AppComponent implements OnInit {
   }
 
 
-
-  etitle:string="";
+  etitle: string = "";
   estartDate: string;
-  eendDate: string ;
-  estartTime : string ;
-  eendTime : string;
+  eendDate: string;
+  estartTime: string;
+  eendTime: string;
 
 
- eventslist= new Array<EventInt>();
- filteredlist= new Array<EventInt>();
 
-  calendarPlugins = [dayGridPlugin, interactionPlugin] ;
+
+  eventslist = new Array<EventInt>();
+  filteredlist = new Array<EventInt>();
+  calevent= new Array<calevent>();
+
+  calendarPlugins = [dayGridPlugin, interactionPlugin];
 
 
 //adding a event
 
-   AddEvent(){
+  AddEvent() {
 
-     if(this.etitle==="" || (!this.estartDate) || (!this.estartTime) || (!this.eendDate) || (!this.eendTime)){
-       alert('please fill all the fields required')
-       return;
-     }
+    if (this.etitle === "" || (!this.estartDate) || (!this.estartTime) || (!this.eendDate) || (!this.eendTime)) {
+      alert('please fill all the fields required')
+      return;
+    }
 
-    let eve ={
+    let eve = {
       id: this.ID(),
       title: this.etitle,
       startDate: this.estartDate,
       startTime: this.estartTime,
       endDate: this.eendDate,
-      endTime: this.eendTime
+      endTime: this.eendTime,
+      ssDate: new Date(this.estartDate + ' ' + this.estartTime),
+      Style: false
     }
 
-   this.eventslist.push(eve)
+    this.eventslist.push(eve)
 
-     this.timeout();
+    let caleve ={
+      title: this.etitle,
+      date: this.estartDate
+    }
 
-     this.etitle=""; this.estartDate=null; this.estartTime=null; this.eendDate=null; this.eendTime=null;
+    this.calevent.push(caleve);
+
+
+    this.timeout();
+
+    this.etitle = "";
+    this.estartDate = null;
+    this.estartTime = null;
+    this.eendDate = null;
+    this.eendTime = null;
 
 
     console.log(this.eventslist)
-   }
+
+    this.sort();
+    this.showAllEvents();
+  }
+
 //generating a unique ID
-   ID(){
+  ID() {
 
-    return "_"+Math.random().toString().substring(2,8);
-   }
-
+    return "_" + Math.random().toString().substring(2, 8);
+  }
 
 
 // Edit event details
-  HandleEdit(type, value, id){
+  HandleEdit(type, value, id) {
 
-    this.eventslist.map(x=>{
+    this.eventslist.map(x => {
 
-      if(x.id===id){
+      if (x.id === id) {
 
-        if(type==='title')
-          x.title=value;
-        if(type==='startDate')
-          x.startDate=value;
-        if(type==='startTime')
-          x.startTime=value;
-        if(type==='endDate')
-          x.endDate=value;
-        if(type==='endTime')
-          x.endTime=value;
+        if (type === 'title')
+          x.title = value;
+        if (type === 'startDate')
+          x.startDate = value;
+        if (type === 'startTime')
+          x.startTime = value;
+        if (type === 'endDate')
+          x.endDate = value;
+        if (type === 'endTime')
+          x.endTime = value;
 
+        x.ssDate = new Date(x.startDate + ' ' + x.startTime);
 
 
       }
     });
 
+    this.sort();
+
   }
 
   // getting events to a particular date
-  filterEvents(date){
+  filterEvents(date) {
 
-     let filterdate=date.dateStr;
+    let filterdate = date.dateStr;
 
-    this.filteredlist= this.eventslist.filter(x=> x.startDate===filterdate);
+    this.filteredlist = this.eventslist.filter(x => x.startDate === filterdate);
+    this.sort();
 
   }
 
   //reffer to show all events button
-  showAllEvents(){
+  showAllEvents() {
 
-     this.filteredlist=this.eventslist;
+    this.filteredlist = this.eventslist;
+    this.sort();
   }
 
 
-  deleteEvent(id){
+  deleteEvent(id) {
 
-    this.eventslist= this.eventslist.filter(x=> x.id!=id);
-    this.filteredlist= this.eventslist.filter(x=> x.id!=id);
+    this.eventslist = this.eventslist.filter(x => x.id != id);
+    this.filteredlist = this.eventslist.filter(x => x.id != id);
+
+    this.sort();
 
 
   }
 
 
-   }
+  sort() {
 
 
 
+    if(this.eventslist.length>1)
+    this.eventslist = this.eventslist.sort((a, b) =>  a.ssDate.getTime() - b.ssDate.getTime());
+    if(this.filteredlist.length>1)
+    this.filteredlist = this.filteredlist.sort((a, b) => a.ssDate.getTime() - b.ssDate.getTime());
 
 
+    console.log(this.eventslist, this.filteredlist)
+  }
+
+
+}
